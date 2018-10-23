@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "common.h"
 #include "machine.h"
@@ -13,12 +14,12 @@ static bool halt;
 
 static void dump_context()
 {
-    printf("gp0=" PFUINT " gp1=" PFUINT " gp2=" PFUINT " gp3=" PFUINT "\n"
-           "gp4=" PFUINT " gp5=" PFUINT " gp6=" PFUINT " gp7=" PFUINT "\n"
-           "af=" PFUINT " ef=" PFUINT " ip=" PFUINT "\n",
-           machine.ctx.gp0, machine.ctx.gp1, machine.ctx.gp2, machine.ctx.gp3,
-           machine.ctx.gp4, machine.ctx.gp5, machine.ctx.gp6, machine.ctx.gp7,
-           machine.ctx.af, machine.ctx.ef, machine.ctx.ip);
+    fprintf(stderr, "gp0=" PFUINT " gp1=" PFUINT " gp2=" PFUINT " gp3=" PFUINT "\n"
+            "gp4=" PFUINT " gp5=" PFUINT " gp6=" PFUINT " gp7=" PFUINT "\n"
+            "af=" PFUINT " ef=" PFUINT " ip=" PFUINT "\n",
+            machine.ctx.gp0, machine.ctx.gp1, machine.ctx.gp2, machine.ctx.gp3,
+            machine.ctx.gp4, machine.ctx.gp5, machine.ctx.gp6, machine.ctx.gp7,
+            machine.ctx.af, machine.ctx.ef, machine.ctx.ip);
 }
 
 static uint *flag_to_regp(byte flag)
@@ -192,6 +193,18 @@ static void op_mov(uint *reg, uint imm)
     *reg = imm;
 }
 
+static void op_ior(uint *reg)
+{
+    GUARD_REGP(reg);
+    *reg = getchar();
+}
+
+static void op_iow(uint *reg)
+{
+    GUARD_REGP(reg);
+    putchar((int) *reg);
+}
+
 static void tick()
 {
     /* Fetch the next instruction via the instruction pointer,
@@ -296,6 +309,12 @@ static void tick()
         case OP_MOV:
             op_mov(ISN2REG1(isn), ISN2IMM(isn));
             break;
+        case OP_IOR:
+            op_ior(ISN2REG1(isn));
+            break;
+        case OP_IOW:
+            op_iow(ISN2REG1(isn));
+            break;
         default:
             LOG("unknown opcode: " PFUINT, opcode);
             machine.ctx.ef |= EF_UNK_ISN;
@@ -303,12 +322,25 @@ static void tick()
     }
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    if (!read(STDIN_FILENO, machine.mem, MEMORY_SIZE)) {
+    if (argc != 2) {
+        puts("usage: tmachine <exe>\n");
+        return 0;
+    }
+
+    int fd;
+    if ((fd = open(argv[1], O_RDONLY)) < 0) {
         perror("read");
         return errno;
     }
+
+    if (!read(fd, machine.mem, MEMORY_SIZE)) {
+        perror("read");
+        return errno;
+    }
+
+    close(fd);
 
     while (!halt) {
         LOG("BOT: ip=" PFUINT, machine.ctx.ip);

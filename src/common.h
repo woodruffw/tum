@@ -42,6 +42,8 @@ enum opcodes
     OP_JGT,
     OP_JGE,
     OP_MOV,
+    OP_IOR,
+    OP_IOW,
 };
 
 typedef struct

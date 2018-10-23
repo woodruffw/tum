@@ -87,27 +87,10 @@ typedef struct
 /* The machine's memory. */
 typedef byte memory_t[MEMORY_SIZE];
 
-/* The machine's signal pseudo-registers. */
-typedef struct
-{
-    /* Input signals. */
-    uint is0;
-    uint is1;
-    uint is2;
-    uint is3;
-
-    /* Output signals. */
-    uint os0;
-    uint os1;
-    uint os2;
-    uint os3;
-} signals_t;
-
 /* The machine's whole state. */
 typedef struct
 {
     context_t ctx;
     memory_t mem;
-    signals_t io;
 } machine_t;
 

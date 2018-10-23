@@ -261,6 +261,14 @@ static void eval(char *line)
         isn.op = OP_MOV;
         parse_one_reg_one_imm(line, &isn.reg1, &isn.imm);
     }
+    else if (STRCASEPREFIX(line, "ior")) {
+        isn.op = OP_IOR;
+        parse_one_reg(line, &isn.reg1);
+    }
+    else if (STRCASEPREFIX(line, "iow")) {
+        isn.op = OP_IOW;
+        parse_one_reg(line, &isn.reg1);
+    }
     else {
         ERRL("Unknown instruction: %s", line);
         exit(1);

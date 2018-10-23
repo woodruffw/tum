@@ -13,7 +13,7 @@ Design
     + [Arithmetic](#arithmetic)
     + [Control Flow](#control-flow)
     + [Copying](#copying)
-    + [Signals](#signals)
+    + [IO](#io)
 
 ## Overview
 
@@ -142,6 +142,12 @@ in the exception flags.
 `MOV REG, IMM` moves the immediate value `IMM` into `REG`. Note that `IMM` is 32 bits wide,
 while `REG` is 64 bits.
 
-### Signals
+### IO
 
-Not implemented yet.
+#### `IOR`
+
+`IOR REG` reads a single byte from the device's input into `REG`.
+
+#### `IOW`
+
+`IOW REG` writes a single byte from `REG` to the device's output.
