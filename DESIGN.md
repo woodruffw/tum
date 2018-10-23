@@ -146,6 +146,10 @@ while `REG` is 64 bits.
 
 `STO REG, IMM` stores the value in `REG` at the address given by `IMM`.
 
+#### `LOA`
+
+`LOA REG, IMM` moves the value at the address given by `IMM` into `REG`.
+
 ### IO
 
 #### `IOR`

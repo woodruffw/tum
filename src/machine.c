@@ -202,6 +202,14 @@ static void op_sto(uint *reg, uint imm)
     memcpy(machine.mem + imm, reg, sizeof(uint));
 }
 
+static void op_loa(uint *reg, uint imm)
+{
+    GUARD_REGP(reg);
+    GUARD_ADDR(imm);
+
+    memcpy(reg, machine.mem + imm, sizeof(uint));
+}
+
 static void op_ior(uint *reg)
 {
     GUARD_REGP(reg);
@@ -312,6 +320,9 @@ static void tick()
             break;
         case OP_STO:
             op_sto(ISN2REG1(isn), ISN2IMM(isn));
+            break;
+        case OP_LOA:
+            op_loa(ISN2REG1(isn), ISN2IMM(isn));
             break;
         case OP_IOR:
             op_ior(ISN2REG1(isn));

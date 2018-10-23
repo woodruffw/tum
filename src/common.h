@@ -43,6 +43,7 @@ enum opcodes
     OP_JGE,
     OP_MOV,
     OP_STO,
+    OP_LOA,
     OP_IOR,
     OP_IOW,
 };
