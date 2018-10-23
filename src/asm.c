@@ -189,6 +189,11 @@ static void eval(char *line)
 
     line[strlen(line) - 1] = '\0';
 
+    /* Ignore any leading whitespace on a line. */
+    while (*line == ' ' || *line == '\t') {
+        line++;
+    }
+
     /* Skip empty lines, lines beginning with comment
      * characters.
      */
