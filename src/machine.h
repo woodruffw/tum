@@ -6,8 +6,10 @@
 /* Indicates whether the given address is in the address space.
  * Note that this evaluates to false if the address is too small
  * to reference an instruction.
+ * TODO: Maybe rename this, to avoid confusing with the sense
+ * of "valid" used in GUARD_ADDR below.
  */
-#define VALID_ADDR(addr) (addr + 7 < MEMORY_SIZE)
+#define VALID_ADDR(addr) ((addr) + 7 < MEMORY_SIZE)
 
 /* Extracts the opcode from an instruction.
  * See the decoding documentation under fetch() in machine.c.
@@ -47,6 +49,17 @@
 #define GUARD_ALIGN(val, ...)            \
     if ((val) % 8) {                     \
         machine.ctx.ef |= EF_ADDR_ALIGN; \
+        return ##__VA_ARGS__;            \
+    }
+
+/* Guards a value that needs to be a valid address,
+ * where "valid" means both aligned and within the
+ * address space.
+ */
+#define GUARD_ADDR(val, ...)             \
+    GUARD_ALIGN(val, ##__VA_ARGS__);     \
+    if (!VALID_ADDR(val)) {              \
+        machine.ctx.ef |= EF_ADDR_FAULT; \
         return ##__VA_ARGS__;            \
     }
 

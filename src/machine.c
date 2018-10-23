@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "common.h"
 #include "machine.h"
@@ -193,6 +194,14 @@ static void op_mov(uint *reg, uint imm)
     *reg = imm;
 }
 
+static void op_sto(uint *reg, uint imm)
+{
+    GUARD_REGP(reg);
+    GUARD_ADDR(imm);
+
+    memcpy(machine.mem + imm, reg, sizeof(uint));
+}
+
 static void op_ior(uint *reg)
 {
     GUARD_REGP(reg);
@@ -211,18 +220,10 @@ static void tick()
      * faulting if the IP isn't valid.
      */
 
-    if (!VALID_ADDR(machine.ctx.ip)) {
-        /* The instruction pointer isn't in our address space.
-         * Set the exception flag to indicate an address fault,
-         * and halt.
-         */
-        machine.ctx.ef |= EF_ADDR_FAULT;
-        return;
-    }
+    GUARD_ADDR(machine.ctx.ip);
 
     /* TODO: Use isn_t here and below.
      */
-    GUARD_ALIGN(machine.ctx.ip);
     uint isn = REG_DEREF(machine.ctx.ip);
 
     machine.ctx.ip += 8;
@@ -309,6 +310,9 @@ static void tick()
         case OP_MOV:
             op_mov(ISN2REG1(isn), ISN2IMM(isn));
             break;
+        case OP_STO:
+            op_sto(ISN2REG1(isn), ISN2IMM(isn));
+            break;
         case OP_IOR:
             op_ior(ISN2REG1(isn));
             break;
@@ -335,6 +339,9 @@ int main(int argc, char **argv)
         return errno;
     }
 
+    /* TODO: Maybe load the program at a higher base address, to give ourselves some
+     * scratch space for variables.
+     */
     if (!read(fd, machine.mem, MEMORY_SIZE)) {
         perror("read");
         return errno;

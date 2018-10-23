@@ -277,6 +277,10 @@ static void eval(char *line)
         isn.op = OP_IOW;
         parse_one_reg(line, &isn.reg1);
     }
+    else if (STRCASEPREFIX(line, "sto")) {
+        isn.op = OP_STO;
+        parse_one_reg_one_imm(line, &isn.reg1, &isn.imm);
+    }
     else {
         ERRL("Unknown instruction: %s", line);
         exit(1);

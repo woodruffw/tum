@@ -142,6 +142,10 @@ in the exception flags.
 `MOV REG, IMM` moves the immediate value `IMM` into `REG`. Note that `IMM` is 32 bits wide,
 while `REG` is 64 bits.
 
+#### `STO`
+
+`STO REG, IMM` stores the value in `REG` at the address given by `IMM`.
+
 ### IO
 
 #### `IOR`
