@@ -6,6 +6,7 @@
 #include <string.h>
 #include <strings.h>
 #include <errno.h>
+#include <stdbool.h>
 
 #include "common.h"
 
@@ -166,9 +167,16 @@ static void parse_one_reg_one_imm(const char *line, byte *reg, uint32_t *imm)
     }
 
     /* TODO(ww): Support decimal immediates. */
+    bool scanned = false;
 
-    if (sscanf(imms, "0x%" SCNx32, imm) != 1) {
-        ERRL("Malformed immediate value (not hex?): %s", imms);
+    scanned = sscanf(imms, "0x%" SCNx32, imm) == 1;
+
+    if (!scanned) {
+        scanned = sscanf(imms, "%" SCNd32, imm) == 1;
+    }
+
+    if (!scanned) {
+        ERRL("Malformed immediate value (not dec/hex?): %s", imms);
         exit(1);
     }
 }
