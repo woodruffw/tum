@@ -70,10 +70,24 @@
 #define AF_LESSER (1 << 2)
 
 /* Exception flags.
+ *
+ * A general address fault, indicating that an operation
+ * tried to use an address outside of the machine's address
+ * space.
  */
 #define EF_ADDR_FAULT ((uint) 1 << 63)
+/* A decoding error, caused by an unknown instruction
+ * opcode.
+ */
 #define EF_UNK_ISN ((uint) 1 << 62)
+/* A register fault, indicating that a register was
+ * either accessed improperly or that an unknown register
+ * was accessed.
+ */
 #define EF_REG_FAULT ((uint) 1 << 61)
+/* An alignment fault, indicating that an operation
+ * tried to dereference an unaligned address.
+ */
 #define EF_ADDR_ALIGN ((uint) 1 << 60)
 
 /* The machine's register context. */
