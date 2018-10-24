@@ -119,6 +119,10 @@ in the exception flags.
 
 `JEQ REG` performs a conditional jump based on the equality flag.
 
+#### `JNE`
+
+`JNE REG` performs a condition jump based on the absence of the equality flag.
+
 #### `JLT`
 
 `JLT REG` performs a conditional jump based on the lesser flag.
@@ -149,6 +153,10 @@ while `REG` is 64 bits.
 #### `LOA`
 
 `LOA REG, IMM` moves the value at the address given by `IMM` into `REG`.
+
+#### `SIP`
+
+`SIP REG` stores the current instruction pointer in `REG`.
 
 ### IO
 

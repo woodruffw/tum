@@ -37,6 +37,7 @@ enum opcodes
     OP_NOT,
     OP_JMP,
     OP_JEQ,
+    OP_JNE,
     OP_JLT,
     OP_JLE,
     OP_JGT,
@@ -44,6 +45,7 @@ enum opcodes
     OP_MOV,
     OP_STO,
     OP_LOA,
+    OP_SIP,
     OP_IOR,
     OP_IOW,
 };

@@ -152,6 +152,15 @@ static void op_jeq(uint *reg)
     }
 }
 
+static void op_jne(uint *reg)
+{
+    GUARD_REGP(reg);
+
+    if (!(machine.ctx.af & AF_EQUAL)) {
+        machine.ctx.ip = *reg;
+    }
+}
+
 static void op_jlt(uint *reg)
 {
     GUARD_REGP(reg);
@@ -208,6 +217,13 @@ static void op_loa(uint *reg, uint imm)
     GUARD_ADDR(imm);
 
     memcpy(reg, machine.mem + imm, sizeof(uint));
+}
+
+static void op_sip(uint *reg)
+{
+    GUARD_REGP(reg);
+
+    *reg = machine.ctx.ip;
 }
 
 static void op_ior(uint *reg)
@@ -303,6 +319,9 @@ static void tick()
         case OP_JEQ:
             op_jeq(ISN2REG1(isn));
             break;
+        case OP_JNE:
+            op_jne(ISN2REG1(isn));
+            break;
         case OP_JLT:
             op_jlt(ISN2REG1(isn));
             break;
@@ -323,6 +342,9 @@ static void tick()
             break;
         case OP_LOA:
             op_loa(ISN2REG1(isn), ISN2IMM(isn));
+            break;
+        case OP_SIP:
+            op_sip(ISN2REG1(isn));
             break;
         case OP_IOR:
             op_ior(ISN2REG1(isn));
