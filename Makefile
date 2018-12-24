@@ -15,3 +15,7 @@ tasm: src/asm.c
 .PHONY: clean
 clean:
 	$(RM) tmachine tasm
+
+.PHONY: fmt
+fmt:
+	clang-format -i -style=file src/*
