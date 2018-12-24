@@ -34,34 +34,34 @@
 
 /* Extract the value in memory given by a register.
  */
-#define REG_DEREF(reg) (*((uint *) (machine.mem + (reg))))
+#define REG_DEREF(reg) (*((uint *)(machine.mem + (reg))))
 
 /* Guards a pointer to a register.
  */
-#define GUARD_REGP(reg, ...)            \
-    if (!(reg)) {                       \
-        machine.ctx.ef |= EF_REG_FAULT; \
-        return ##__VA_ARGS__;           \
-    }
+#define GUARD_REGP(reg, ...)                                                                       \
+  if (!(reg)) {                                                                                    \
+    machine.ctx.ef |= EF_REG_FAULT;                                                                \
+    return ##__VA_ARGS__;                                                                          \
+  }
 
 /* Guards a value that needs to be address-aligned.
  */
-#define GUARD_ALIGN(val, ...)            \
-    if ((val) % 8) {                     \
-        machine.ctx.ef |= EF_ADDR_ALIGN; \
-        return ##__VA_ARGS__;            \
-    }
+#define GUARD_ALIGN(val, ...)                                                                      \
+  if ((val) % 8) {                                                                                 \
+    machine.ctx.ef |= EF_ADDR_ALIGN;                                                               \
+    return ##__VA_ARGS__;                                                                          \
+  }
 
 /* Guards a value that needs to be a valid address,
  * where "valid" means both aligned and within the
  * address space.
  */
-#define GUARD_ADDR(val, ...)             \
-    GUARD_ALIGN(val, ##__VA_ARGS__);     \
-    if (!VALID_ADDR(val)) {              \
-        machine.ctx.ef |= EF_ADDR_FAULT; \
-        return ##__VA_ARGS__;            \
-    }
+#define GUARD_ADDR(val, ...)                                                                       \
+  GUARD_ALIGN(val, ##__VA_ARGS__);                                                                 \
+  if (!VALID_ADDR(val)) {                                                                          \
+    machine.ctx.ef |= EF_ADDR_FAULT;                                                               \
+    return ##__VA_ARGS__;                                                                          \
+  }
 
 /* Arithmetic flags.
  */
@@ -75,49 +75,46 @@
  * tried to use an address outside of the machine's address
  * space.
  */
-#define EF_ADDR_FAULT ((uint) 1 << 63)
+#define EF_ADDR_FAULT ((uint)1 << 63)
 /* A decoding error, caused by an unknown instruction
  * opcode.
  */
-#define EF_UNK_ISN ((uint) 1 << 62)
+#define EF_UNK_ISN ((uint)1 << 62)
 /* A register fault, indicating that a register was
  * either accessed improperly or that an unknown register
  * was accessed.
  */
-#define EF_REG_FAULT ((uint) 1 << 61)
+#define EF_REG_FAULT ((uint)1 << 61)
 /* An alignment fault, indicating that an operation
  * tried to dereference an unaligned address.
  */
-#define EF_ADDR_ALIGN ((uint) 1 << 60)
+#define EF_ADDR_ALIGN ((uint)1 << 60)
 
 /* The machine's register context. */
-typedef struct
-{
-    /* General purpose registers. */
-    uint gp0;
-    uint gp1;
-    uint gp2;
-    uint gp3;
-    uint gp4;
-    uint gp5;
-    uint gp6;
-    uint gp7;
+typedef struct {
+  /* General purpose registers. */
+  uint gp0;
+  uint gp1;
+  uint gp2;
+  uint gp3;
+  uint gp4;
+  uint gp5;
+  uint gp6;
+  uint gp7;
 
-    /* Flag registers. */
-    uint af;
-    uint ef;
+  /* Flag registers. */
+  uint af;
+  uint ef;
 
-    /* Instruction pointer. */
-    uint ip;
+  /* Instruction pointer. */
+  uint ip;
 } context_t;
 
 /* The machine's memory. */
 typedef byte memory_t[MEMORY_SIZE];
 
 /* The machine's whole state. */
-typedef struct
-{
-    context_t ctx;
-    memory_t mem;
+typedef struct {
+  context_t ctx;
+  memory_t mem;
 } machine_t;
-
