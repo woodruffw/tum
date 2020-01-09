@@ -1,6 +1,8 @@
 tum
 ===
 
+[![Build Status](https://img.shields.io/github/workflow/status/woodruffw/tum/CI/master)](https://github.com/woodruffw/tum/actions?query=workflow%3ACI)
+
 A **t**iny **u**seless **m**achine.
 
 *In progress.*
